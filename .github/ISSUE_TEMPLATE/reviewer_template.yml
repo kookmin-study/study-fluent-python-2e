@@ -19,14 +19,14 @@ body:
         - label: 학습 기한을 잘 지켰나요?
 
   - type: textarea
-    id: general-feedback
+    id: general-feedback1
     attributes:
       label: 간략한 정리
       description: 간략한 정리를 쓰면 됩니다
       placeholder: 간략한 정리를 쓰면 됩니다
 
   - type: textarea
-    id: general-feedback
+    id: general-feedback2
     attributes:
       label: 읽고 느낀 점
       description: 읽으면서 느낀점, 새롭게 알게된 점 등 작성하시면 됩니다
