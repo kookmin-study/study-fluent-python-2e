@@ -1,34 +1,41 @@
-name: "코드 리뷰 체크리스트"
-description: "PR 리뷰 시 확인 사항을 체크해주세요."
+name: "PR Review Template"
+description: "PR 리뷰 작성 템플릿 입니다 "
 title: "[리뷰] 리뷰 대상 PR 제목을 적어주세요"
 labels: ["review"]
 body:
   - type: markdown
     attributes:
       value: |
-        리뷰어님, 아래 항목들을 체크하고 의견을 남겨주세요.
+        리뷰어님, PR 내용 확인하신 후 아래 내용 작성해주세요.
 
   - type: checkboxes
     id: review-checklist
     attributes:
-      label: 코드 리뷰 체크리스트
+      label: PR Review CheckList
       options:
-        - label: 코드가 이해하기 쉽게 작성되어 있나요?
-        - label: 불필요한 코드나 주석은 없나요?
-        - label: 디렉토리 및 파일 명명 규칙을 지켰나요?
-        - label: 테스트 또는 실행 결과 확인했나요?
-        - label: 개선이 필요한 부분에 대해 의견을 남겼나요?
+        - label: PR에 포함되어야 할 내용이 다 있나요?
+        - label: PR 제목 규칙을 잘 따랐나요?
+        - label: PR 요청자 본인 폴더 내 작업이 맞나요?
+        - label: 학습 기한을 잘 지켰나요?
 
   - type: textarea
     id: general-feedback
     attributes:
-      label: 전반적인 피드백
-      description: 좋았던 점이나 개선 사항이 있다면 자유롭게 작성해주세요.
-      placeholder: 예) 네이밍이 명확하고 로직이 깔끔해요.
+      label: 간략한 정리
+      description: 간략한 정리를 쓰면 됩니다
+      placeholder: 간략한 정리를 쓰면 됩니다
+
+  - type: textarea
+    id: general-feedback
+    attributes:
+      label: 읽고 느낀 점
+      description: 읽으면서 느낀점, 새롭게 알게된 점 등 작성하시면 됩니다
+      placeholder: 읽으면서 느낀점, 새롭게 알게된 점 등 작성하시면 됩니다
+
 
   - type: textarea
     id: questions
     attributes:
-      label: 궁금한 점 또는 이해되지 않는 부분
-      description: 코드 보면서 이해되지 않았던 부분이 있다면 작성해주세요.
-      placeholder: 예) 이 부분 로직을 왜 이렇게 짜셨는지 궁금해요.
+      label: 궁금한 점 또는 이해되지 않는 부분, 같이 이야기하고 싶은 부분 
+      description: 공유하고 싶은 부분, 이해가 안되는 부분 등 다양한 의견 모두
+      placeholder: 공유하고 싶은 부분, 이해가 안되는 부분 등 다양한 의견 모두

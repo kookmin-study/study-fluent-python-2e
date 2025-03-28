@@ -3,6 +3,6 @@ blank_issues_enabled: true
 contact_links: []
 
 issue_templates:
-  - name: 코드 리뷰 체크리스트
-    description: PR 리뷰 시 사용할 체크리스트 양식입니다.
+  - name: PR Review Template
+    description: PR 리뷰 시 사용할 양식입니다.
     file: reviewer_template.yml
