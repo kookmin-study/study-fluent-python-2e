@@ -1,8 +1,0 @@
-blank_issues_enabled: true
-
-contact_links: []
-
-issue_templates:
-  - name: PR Review Template
-    description: PR 리뷰 시 사용할 양식입니다.
-    file: reviewer_template.yml
