@@ -19,7 +19,7 @@ echo "### Checking out main branch..."
 git checkout main
 
 echo "### Merging upstream/main into local main..."
-git merge upstream/main
+git merge upstream/main --no-edit
 
 echo "### Pushing to origin..."
 git push origin main
