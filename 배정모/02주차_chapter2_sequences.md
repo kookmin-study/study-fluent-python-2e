@@ -143,9 +143,110 @@
 >   - 그 객체가 mutable이면 원본 값이 바뀌고,<br>👉 Call by Reference 처럼 보이겠지
 >   - 객체가 immutable이면 새로운 객체를 만들어 새 참조로 바꿔치는 것<br>👉 Call by Value 처럼 보이겠지
 
-## 2. List comprehension & Generator expression
-### listcomp 
-### genexp
+## 2. List Comprehension & Generator Expression
+### List Comprehension(listcomp) 
+- sequence 혹은 기타 iterable 객체로부터 새 리스트 객체를 만들기 위함
+- **Eager Evaluation**
+    ```python
+        words = '$#@asdq'
+        codes = [ord(word) for word in words]
+    ```
+- 단, 생성한 리스트를 사용할 것이 아니라면(ex.한 번만 순회하면 될 경우), 안쓰는 것이 좋음
+    ```python
+        t = tuple([x**2 for x in range(10)])
+    ```
+    - tuple 을 만들기위해 리스트를 생성할 필요가 없음.(한 번 순회하고 버릴거니까)
+    - 리스트가 다 메모리에 올라가는 비효율이 생김
+    - genexp 가 효율적(Lazy Evaluation) 
+
+- map()/filter()/lambda expr 조합보다 list comp 가 빠르고 직관적
+    - list comprehension은 C로 구현된 내부 루프를 사용하여, 파이썬 인터프리터 레벨의 함수 호출 오버헤드가 없음. (파이썬에선 함수 호출 오버헤드가 큰 비용을 차지함)
+    - dis.dis 활용 비교 : 파이썬 인터프리터가 내부적으로 어떤 명령어(opcode)를 실행하는지 알 수 있음
+        ```python
+        import dis
+        dis.dis('[x**2 for x in range(10) if x % 2 == 0]')
+        """
+        1           0 LOAD_CONST               0 (<code object <listcomp> at 0x1026469d0, file "<dis>", line 1>)
+                    2 LOAD_CONST               1 ('<listcomp>')
+                    4 MAKE_FUNCTION            0
+                    6 LOAD_NAME                0 (range)
+                    8 LOAD_CONST               2 (10)
+                    10 CALL_FUNCTION            1
+                    12 GET_ITER
+                    14 CALL_FUNCTION            1
+                    16 RETURN_VALUE
+        Disassembly of <code object <listcomp> at 0x1026469d0, file "<dis>", line 1>:
+        1           0 BUILD_LIST               0
+                    2 LOAD_FAST                0 (.0)
+                >>    4 FOR_ITER                24 (to 30)
+                    6 STORE_FAST               1 (x)
+                    8 LOAD_FAST                1 (x)
+                    10 LOAD_CONST               0 (2)
+                    12 BINARY_MODULO
+                    14 LOAD_CONST               1 (0)
+                    16 COMPARE_OP               2 (==)
+                    18 POP_JUMP_IF_FALSE        4
+                    20 LOAD_FAST                1 (x)
+                    22 LOAD_CONST               0 (2)
+                    24 BINARY_POWER
+                    26 LIST_APPEND              2
+                    28 JUMP_ABSOLUTE            4
+                >>   30 RETURN_VALUE
+        """ 
+        ```
+        - FOR_ITER, BINARY_MODULO, COMPARE_OP, BINARY_POWER 와 같은 간단한 연산 opcode 위주
+	    - 함수 호출 없이 루프를 직접 순회함 → 빠름! 
+        ```python
+        dis.dis('list(map(lambda x: x**2, filter(lambda x: x % 2 == 0, range(10))))')
+        """
+        1           0 LOAD_NAME                0 (list)
+                    2 LOAD_NAME                1 (map)
+                    4 LOAD_CONST               0 (<code object <lambda> at 0x104a4ea80, file "<dis>", line 1>)
+                    6 LOAD_CONST               1 ('<lambda>')
+                    8 MAKE_FUNCTION            0
+                    10 LOAD_NAME                2 (filter)
+                    12 LOAD_CONST               2 (<code object <lambda> at 0x104a4eb30, file "<dis>", line 1>)
+                    14 LOAD_CONST               1 ('<lambda>')
+                    16 MAKE_FUNCTION            0
+                    18 LOAD_NAME                3 (range)
+                    20 LOAD_CONST               3 (10)
+                    22 CALL_FUNCTION            1
+                    24 CALL_FUNCTION            2
+                    26 CALL_FUNCTION            2
+                    28 CALL_FUNCTION            1
+                    30 RETURN_VALUE
+
+        Disassembly of <code object <lambda> at 0x104a4ea80, file "<dis>", line 1>:
+        1           0 LOAD_FAST                0 (x)
+                    2 LOAD_CONST               1 (2)
+                    4 BINARY_POWER
+                    6 RETURN_VALUE
+
+        Disassembly of <code object <lambda> at 0x104a4eb30, file "<dis>", line 1>:
+        1           0 LOAD_FAST                0 (x)
+                    2 LOAD_CONST               1 (2)
+                    4 BINARY_MODULO
+                    6 LOAD_CONST               2 (0)
+                    8 COMPARE_OP               2 (==)
+                    10 RETURN_VALUE
+        """
+        ```
+        - MAKE_FUNCTION, CALL_FUNCTION이 반복 실행(lambda 함수 계속 호출) → 함수 호출 오버헤드 증가
+	    - range(10) → filter → map → list() 순으로 중첩 호출
+    - 속도 비교 예시
+        - [check_speed_of_listcomp.py](./codes/02주차_chapter2-2_check_speed_of_listcomp.py)
+
+### Generator Expression(genexp)
+- 생성자에 전달할 데이터를 통째로 만들지 않고, iterator protocol을 이용하여, 필요할때 하나씩 생성함.
+- **Eager Evaluation**
+    ```python
+    squares = (x**2 for x in range(10))
+    print(squares)  # <generator object <genexpr> at 0x100523510>
+    print(next(squares))    # 0
+    print(next(squares))    # 1
+    print(next(squares))    # 4
+    print(next(squares))    # 9
+    ```
 
 ## 3. Tuple as a record or immutable list
 ## 4. Sequence unpacking & pattern-matching
