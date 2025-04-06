@@ -65,7 +65,7 @@
     - [abc_of_sequence.py](./codes/02주차_chapter2-1_abc_of_sequence.py)
 
 > 🔥 **객체에 대한 참조를 담는다(넘긴다)** 에 대하여... 
->- PyObject Structure Of CPython
+>- 🔥 PyObject Structure Of CPython
 >   - 파이썬에서 모든 객체는 **C 구조체(PyObject)** 기반
 >   - PyObject 기본 구조
 >       ```C
@@ -111,8 +111,6 @@
 >	    - 힙에 PyFloatObject 구조체 생성됨
 >	    - 그 주소를 PyObject*로 업캐스팅해서 반환
 >	    - 파이썬 변수 a는 이 포인터를 참조하게 됨
-><br>
-><br>
 >- 🔥 결론 : 함수 호출 시 “객체 참조를 값으로 전달”한다는 건, 결국 **객체의 주소(포인터)를 복사해 넘기는 것**
 >   - "객체 참조"는 C 레벨에서 PyObject* 로 표현되며, 객체 구조체에 대한 **포인터**
 >   - 단, 파이썬은 메모리 안전성, 추상화, **가비지 컬렉션(GC)**을 위해
@@ -123,7 +121,7 @@
 >   - 즉, 파이썬은 포인터를 안전하게 감싼 "참조" 개념만 노출하며, 함수 호출 시 이 포인터가 **값처럼 복사되어** 전달되는 것
 
 > 🔥 왜 python은 Call By Reference 처럼 보이기도하고 Call By Value 처럼 보이기도 할까? 에 대하여...
->- **Call By Object-Reference(Assignment)**
+>- 🔥 **Call By Object-Reference(Assignment)**
 >   - 파이썬의 변수할당은 참조를 저장한다(**Pointer**)
 >       ```python
 >       def modify(n):
@@ -139,8 +137,6 @@
 >       - ob_refcnt = 3 이 되겠지 (이 값이 **GC** 에 활용됨 - 참조 카운팅 기반 메모리 관리)
 >       - modify(z) 이 실행되는 순간, 1.1 객체의 참조회수는 4로 잠시 늘어나나(n+=1 연산시 다시 3됨),<br> **immutable 객체이므로,** in-place 가 아닌 **새 객체 생성 + 참조 바꿔치기**
 >       - 2.1 은 새로운 PyFloatObject 로 존재하게 되고, n 이 해당 객체 주소를 참조함(함수 종료시엔 사라지겠지 -> GC 대상) 
-><br>
-><br>
 >- 🔥 결론 : python은 객체 참조를 전달하므로,<br>mutable 객체라면 값을 in-place 하므로 Call by Reference 같이,<br> immutable 객체라면 새로운 객체를 만들어 참조를 바꿔주는 방식으로 동작하므로 Call by Value 같이 보이는 것 
 >   - 참조(주소)를 넘긴다
 >   - 파이썬은, 그 주소 자체를 직접 조작할 수는 없어서 그 주소가 가리키는 객체의 값을 조작할 수 밖에 없다.
