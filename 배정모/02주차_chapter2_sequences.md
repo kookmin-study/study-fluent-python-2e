@@ -249,9 +249,12 @@
     print(next(squares))    # 4
     print(next(squares))    # 9
     ```
-
+    - 메모리에 한 번에 다 올리지 않음 : 필요할 때, 하나씩 생성(단 한 번 돌면 끝이겠지!)
 
 ## 3. Tuple as a record or immutable list
+
 ## 4. Sequence unpacking & pattern-matching
+
 ## 5. Slicing    
+
 ## 6. Other Sequences(array, deque etc)    
