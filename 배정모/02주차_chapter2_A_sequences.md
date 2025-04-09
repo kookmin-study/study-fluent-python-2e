@@ -1,12 +1,7 @@
-# chapter 2 - Sequences
+# chapter 2 Sequences - A 
 - Contents
     - [Overview of python built-in Sequences](#1-overview-of-python-built-in-sequences)
     - [List comprehension & Generator expression](#2-list-comprehension--generator-expression)
-    - [Tuple as a record or immutable list](#3-tuple-as-a-record-or-immutable-list)
-    - [Sequence unpacking & pattern matching](#4-sequence-unpacking--pattern-matching)
-    - [Slicing](#5-slicing)
-    - [Other Sequences(array, deque etc)](#6-other-sequencesarray-deque-etc)
-
 ## 1. Overview of python built-in Sequences
 
 ### Container VS Flat 
@@ -249,11 +244,31 @@
     print(next(squares))    # 4
     print(next(squares))    # 9
     ```
+- example of **Cartesian Product**
+    ```python
+    colors = ['black','green','yellow']
+    sizes = ['S','M','L','XL']
+    for cloth in (f"{c}_{s}" for c in colors for s in sizes):
+        print(cloth)
+    """output
+    black_S
+    black_M
+    black_L
+    black_XL
+    green_S
+    green_M
+    green_L
+    green_XL
+    yellow_S
+    yellow_M
+    yellow_L
+    yellow_XL
+    """
+    ```
 
-## 3. Tuple as a record or immutable list
-
-## 4. Sequence unpacking & pattern-matching
-
-## 5. Slicing    
-
-## 6. Other Sequences(array, deque etc)    
+# NEXT
+- [Go to chapter 2-B](./02주차_chapter2_B_sequences.md)
+    - Tuple as a record or immutable list
+    - Sequence unpacking & pattern matching
+    - Slicing
+    - Other Sequences(array, deque etc)
