@@ -12,16 +12,16 @@ on_error() {
 # 에러 발생 시 on_error 함수 호출하도록 설정
 trap 'on_error' ERR
 
-echo "Fetching upstream..."
+echo "### Fetching upstream..."
 git fetch upstream
 
-echo "Checking out main branch..."
+echo "### Checking out main branch..."
 git checkout main
 
-echo "Merging upstream/main into local main..."
-git merge upstream/main
+echo "### Merging upstream/main into local main..."
+git merge upstream/main --no-edit
 
-echo "Pushing to origin..."
+echo "### Pushing to origin..."
 git push origin main
 
-echo "Sync complete!"
+echo "### Sync complete!"
