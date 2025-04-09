@@ -4,6 +4,7 @@ path = _collections_abc.__file__
 os.system(f"cat {path}")
 
 
+
 ### SEQUENCE ###
 class Sequence(Reversible, Collection):
 
