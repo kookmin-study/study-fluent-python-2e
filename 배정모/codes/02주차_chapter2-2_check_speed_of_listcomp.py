@@ -16,3 +16,9 @@ print(f"map + filter:      {end2 - start2:.4f}초")
 
 # List comprehension: 0.0993초
 # map + filter:      0.1302초
+
+
+colors = ['black','green','yellow']
+sizes = ['S','M','L','XL']
+for cloth in (f"{c}_{s}" for c in colors for s in sizes):
+    print(cloth)
