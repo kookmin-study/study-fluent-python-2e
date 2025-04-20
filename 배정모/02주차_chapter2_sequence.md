@@ -1,11 +1,10 @@
-# chapter 2 - Sequences
+# chapter 2 Sequences - A 
 - Contents
     - [Overview of python built-in Sequences](#1-overview-of-python-built-in-sequences)
     - [List comprehension & Generator expression](#2-list-comprehension--generator-expression)
     - [Tuple as a record or immutable list](#3-tuple-as-a-record-or-immutable-list)
     - [Sequence unpacking & pattern matching](#4-sequence-unpacking--pattern-matching)
     - [Slicing](#5-slicing)
-    - [Other Sequences(array, deque etc)](#6-other-sequencesarray-deque-etc)
 
 ## 1. Overview of python built-in Sequences
 
@@ -249,11 +248,134 @@
     print(next(squares))    # 4
     print(next(squares))    # 9
     ```
+- example of **Cartesian Product**
+    ```python
+    colors = ['black','green','yellow']
+    sizes = ['S','M','L','XL']
+    for cloth in (f"{c}_{s}" for c in colors for s in sizes):
+        print(cloth)
+    """output
+    black_S
+    black_M
+    black_L
+    black_XL
+    green_S
+    green_M
+    green_L
+    green_XL
+    yellow_S
+    yellow_M
+    yellow_L
+    yellow_XL
+    """
+    ```
+
 
 ## 3. Tuple as a record or immutable list
+- As a Record
+    ```python
+    traveler_ids = [('USA','1234123'),('BRA','8174816'),('KOR','1898519490'),('ESP','98171535748')]
+    for passport in traveler_ids :
+        print('%s/%s' % passport)
+    
+    for country, _ in traveler_ids :
+        print(country)
+    ```
+    - for 루프 돌 때, passport 변수가 리스트 내 각 튜플객체에 binding
+    - for 루프는 튜플의 각 요소를 가져오는 방법을 앎 -> **Unpacking**
+    - 관심 없는 요소는 더미변수를 나타내는 _ 주로 사용함 
+        - 위의 경우 언더바도 binding 됨.  match/case 문 에선 binding 안 됨.
+
+- As a Immutable List
+    - list 보다 메모리를 적게 소비하는 tuple 
+        - 길이가 고정되어 있으니 필요한 만큼만 메모리 할당. list 는 추가할 것 생각해 좀 더 할당함.
+        - tuple 요소에 대한 참조는 tuple 구조체에 배열로 저장됨. list 는 다른 곳에 저장된 참조 배열에 대한 포인터를 가짐 <br>-> 요소가 늘어나면, 공간을 새로 확보하고 참조 배열 재할당 필요하므로<br>-> CPU Cache 효율 감소
+
 
 ## 4. Sequence unpacking & pattern-matching
-
+- Sequence Unpacking
+    - 기본 unpacking
+    ```python
+    import os
+    path = '/Users/jeongmo/local-git-repo/study-fluent-python-2e/배정모/sync-with-upstream.sh'
+    _, filename = os.path.split(path)   # (path, last_part) tuple 생성 & unpacking
+    print(filename) # sync-with-upstream.sh
+    ```
+    - 확장 unpacking
+    ```python
+    a, *b = [1, 2, 3, 4]
+    print(a, b)  # 1, [2, 3, 4]
+    a, *b, c = [1, 2, 3, 4, 5]
+    print(a, b, c)  # 1 [2, 3, 4] 5
+    ```
+    - enumerate, zip 같은 iterable 객체도 전부 unpacking 가능하다
+    ```python
+    la = ['A', 'B', 'C']
+    lb = [1, 2, 3]
+    lc = [9, 8, 7]
+    for a, b, c in zip(la, lb, lc):
+        print(a, b, c)
+    ```
+- Sequence Pattern Matching(py 3.10~)
+    ```python
+    def test(seq):
+    match seq:
+        case [1, 2, 3]:
+            return "정확히 [1, 2, 3]과 일치!"
+        case [1, 2, _]:
+            return "세 번째 값은 무시하고 [1, 2, _] 패턴과 일치!"
+        case [1, *rest]:
+            return f"1로 시작하고 나머지는 {rest}!"
+        case _:
+            return "어떤 패턴에도 안 맞음"
+    ```
+    - 언패킹 + 와일드카드 조합
+    ```python
+    def test(seq):
+    match seq:
+        case [_, second, *_]:
+            return f"두 번째 값은 {second}"
+    ```
 ## 5. Slicing    
+- 슬라이스 객체 : slice(start, stop, step) - 서브리스트를 만들기 위한 인덱스 정보(start, stop, step)를 담고 있는 객체
+- 동작 방식 
+    ```python
+    lst[1:4]
+    # slice(1, 4)
+    # print(s.start, s.stop, s.step)  -> 1 4 None
+    ```
+    - slice(1, 4) 객체생성
+	- lst.\_\_getitem\_\_(slice(1, 4)) 호출
+    - **즉, 슬라이싱은 실제로는 인덱스 접근이 아니라 slice 객체를 인자로 넘기는 함수 호출!**
+- 파이썬 리스트는 슬라이스 할당 시 iterable만 허용하도록 구현되어 있음 
+    ```python
+    l = list(range(10)) # [0,1,2,3,4,5,6,7,8,9]
+    l[2:5] = [100] # [0,1,100,5,6,7,8,9]
+    l[2:5] = 100 # TypeError : can only assign iterable
+    ```
+    - 왜그럴까? : slicing 은 결국 slice 객체를 \_\_getitem\_\_ 메서드 \_\_setitem\_\_ 메서드 인자로 넘기는것.. 아래를 보면 왜 iterable 이어야 하는지 이해가 갈것임...
+    - iterable 이 아닌 그냥 값으로 쓰고싶다면, indexing 을 해야겠지... 
+- \_\_getitem\_\_ , \_\_setitem\_\_ 예시
+    ```python
+    class MyList:
+        def __init__(self, data):
+            self.data = data
 
-## 6. Other Sequences(array, deque etc)    
+        def __getitem__(self, key):
+            if isinstance(key, slice):
+                # print(f"__getitem__ slice: start={key.start}, stop={key.stop}, step={key.step}")
+                return self.data[key.start:key.stop:key.step]
+            else:
+                # print(f"__getitem__ index: {key}")
+                return self.data[key]
+
+        def __setitem__(self, key, value):
+            if isinstance(key, slice):
+                # print(f"__setitem__ slice: start={key.start}, stop={key.stop}, step={key.step}")
+                self.data[key.start:key.stop:key.step] = value
+            else:
+                # print(f"__setitem__ index: {key}")
+                self.data[key] = value
+    ```
+
+
