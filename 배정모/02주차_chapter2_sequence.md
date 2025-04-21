@@ -355,27 +355,33 @@
     ```
     - 왜그럴까? : slicing 은 결국 slice 객체를 \_\_getitem\_\_ 메서드 \_\_setitem\_\_ 메서드 인자로 넘기는것.. 아래를 보면 왜 iterable 이어야 하는지 이해가 갈것임...
     - iterable 이 아닌 그냥 값으로 쓰고싶다면, indexing 을 해야겠지... 
-- \_\_getitem\_\_ , \_\_setitem\_\_ 예시
+- \_\_getitem\_\_ , \_\_setitem\_\_ 직접 구현해보자(왜 iterable 객체만 할당가능한지 알게될거야)
     ```python
     class MyList:
-        def __init__(self, data):
-            self.data = data
-
-        def __getitem__(self, key):
-            if isinstance(key, slice):
-                # print(f"__getitem__ slice: start={key.start}, stop={key.stop}, step={key.step}")
-                return self.data[key.start:key.stop:key.step]
+        def __init__(self,data):
+            self.data = data # [10, 20, 30, 40, 50] 리스트 받는다 가정. 단, 구현은 직접
+    
+        def __getitem__(self, index):
+            if isinstance(index, slice):
+                indices = range(*index.indices(len(self.data)))
+                return [self.data[i] for i in indices]   #이런 방식으로 도는거
+            elif isinstance(index, int):
+                return self.data[index]
             else:
-                # print(f"__getitem__ index: {key}")
-                return self.data[key]
-
-        def __setitem__(self, key, value):
-            if isinstance(key, slice):
-                # print(f"__setitem__ slice: start={key.start}, stop={key.stop}, step={key.step}")
-                self.data[key.start:key.stop:key.step] = value
+                raise TypeError
+    
+        def __setitem__(self, index, value):
+            if isinstance(index, slice):
+                indices = list(range(*index.indices(len(self.data))))
+                for i in reversed(indices):
+                    del self.data[i]
+                insert_at = indices[0] if indices else len(self.data)
+                for offset, v in enumerate(value):     # 왜 slice 객체를 통한 할당이 iterable 객체만 가능한지 알 수 있지
+                    self.data.insert(insert_at + offset, v)
+            elif isinstance(index, int):
+                self.data[index] = value
             else:
-                # print(f"__setitem__ index: {key}")
-                self.data[key] = value
+                raise TypeError
     ```
 
 
