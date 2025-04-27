@@ -1,4 +1,4 @@
-# chapter 3 Dict And Set - A : Dict
+# chapter 3 Dict And Set 
 - Contents
     - [About Dict](#1-about-dict)
     - [PyDictObject](#2-pydictobject)
